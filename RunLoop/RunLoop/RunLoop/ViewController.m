@@ -87,6 +87,28 @@
 //    CFRelease(observer);
     
     
+
+    
+    NSLog(@"1");
+    dispatch_queue_t defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0);
+    dispatch_async(defaultQueue, ^{
+        NSLog(@"2");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"3");
+        });
+    });
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    NSLog(@"4");
+}
+
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    NSLog(@"5");
 }
 
 -(void)timer{
