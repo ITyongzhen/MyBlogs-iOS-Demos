@@ -25,7 +25,6 @@
     
     self.thread = [[MJThread alloc] initWithBlock:^{
         NSLog(@"%@----begin----", [NSThread currentThread]);
-        
         // 往RunLoop里面添加Source\Timer\Observer
         [[NSRunLoop currentRunLoop] addPort:[[NSPort alloc] init] forMode:NSDefaultRunLoopMode];
         // 这个方法会不能退出循环
@@ -33,15 +32,8 @@
         while (!weakSelf.isStoped) {
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
         }
-        
         NSLog(@"%@----end----", [NSThread currentThread]);
-        
-        // NSRunLoop的run方法是无法停止的，它专门用于开启一个永不销毁的线程（NSRunLoop）
-        //        [[NSRunLoop currentRunLoop] run];
-        /*
-         it runs the receiver in the NSDefaultRunLoopMode by repeatedly invoking runMode:beforeDate:.
-         In other words, this method effectively begins an infinite loop that processes data from the run loop’s input sources and timers
-         */
+
         
     }];
     [self.thread start];
@@ -81,4 +73,32 @@
 //    [self stop];
 }
 
+-(void)test1{
+    __weak typeof(self) weakSelf = self;
+    
+    self.stopped = NO;
+    
+    self.thread = [[MJThread alloc] initWithBlock:^{
+        NSLog(@"%@----begin----", [NSThread currentThread]);
+        
+        // 往RunLoop里面添加Source\Timer\Observer
+        [[NSRunLoop currentRunLoop] addPort:[[NSPort alloc] init] forMode:NSDefaultRunLoopMode];
+        // 这个方法会不能退出循环
+        //        [[NSRunLoop currentRunLoop] run];
+        while (!weakSelf.isStoped) {
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        }
+        
+        NSLog(@"%@----end----", [NSThread currentThread]);
+        
+        // NSRunLoop的run方法是无法停止的，它专门用于开启一个永不销毁的线程（NSRunLoop）
+        //        [[NSRunLoop currentRunLoop] run];
+        /*
+         it runs the receiver in the NSDefaultRunLoopMode by repeatedly invoking runMode:beforeDate:.
+         In other words, this method effectively begins an infinite loop that processes data from the run loop’s input sources and timers
+         */
+        
+    }];
+    [self.thread start];
+}
 @end
