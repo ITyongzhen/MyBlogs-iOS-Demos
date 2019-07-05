@@ -15,6 +15,9 @@
 		210FF6DC22B8A1F20086F89C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 210FF6DB22B8A1F20086F89C /* main.m */; };
 		210FF6E722B8A2120086F89C /* YZCallStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 210FF6E322B8A2120086F89C /* YZCallStack.m */; };
 		210FF6E822B8A2120086F89C /* YZMonitorRunloop.m in Sources */ = {isa = PBXBuildFile; fileRef = 210FF6E422B8A2120086F89C /* YZMonitorRunloop.m */; };
+		215B89CE22CEF78000FD0BA7 /* YZLogFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 215B89CD22CEF78000FD0BA7 /* YZLogFile.m */; };
+		21854FC422CA1D6200BDBE1E /* YZAppInfoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 21854FC222CA1D6100BDBE1E /* YZAppInfoUtil.m */; };
+		A795FB02E59D604F5D09494F /* libPods-YZMonitorRunLoopDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 62DA2D286E59072717746B45 /* libPods-YZMonitorRunLoopDemo.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,13 @@
 		210FF6E422B8A2120086F89C /* YZMonitorRunloop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZMonitorRunloop.m; sourceTree = "<group>"; };
 		210FF6E522B8A2120086F89C /* YZCallStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZCallStack.h; sourceTree = "<group>"; };
 		210FF6E622B8A2120086F89C /* YZMonitorRunloop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZMonitorRunloop.h; sourceTree = "<group>"; };
+		215B89CC22CEF78000FD0BA7 /* YZLogFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YZLogFile.h; sourceTree = "<group>"; };
+		215B89CD22CEF78000FD0BA7 /* YZLogFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YZLogFile.m; sourceTree = "<group>"; };
+		21854FC222CA1D6100BDBE1E /* YZAppInfoUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZAppInfoUtil.m; sourceTree = "<group>"; };
+		21854FC322CA1D6200BDBE1E /* YZAppInfoUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZAppInfoUtil.h; sourceTree = "<group>"; };
+		62DA2D286E59072717746B45 /* libPods-YZMonitorRunLoopDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YZMonitorRunLoopDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C4D6B9591EC9F0A287C14E7 /* Pods-YZMonitorRunLoopDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YZMonitorRunLoopDemo.debug.xcconfig"; path = "Target Support Files/Pods-YZMonitorRunLoopDemo/Pods-YZMonitorRunLoopDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		EBE06FB8ECFBD9CD170F977E /* Pods-YZMonitorRunLoopDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YZMonitorRunLoopDemo.release.xcconfig"; path = "Target Support Files/Pods-YZMonitorRunLoopDemo/Pods-YZMonitorRunLoopDemo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,17 +49,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A795FB02E59D604F5D09494F /* libPods-YZMonitorRunLoopDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01AB3A8C19DC7D255118377A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7C4D6B9591EC9F0A287C14E7 /* Pods-YZMonitorRunLoopDemo.debug.xcconfig */,
+				EBE06FB8ECFBD9CD170F977E /* Pods-YZMonitorRunLoopDemo.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		210FF6C022B8A1EF0086F89C = {
 			isa = PBXGroup;
 			children = (
 				210FF6CB22B8A1EF0086F89C /* YZMonitorRunLoopDemo */,
 				210FF6CA22B8A1EF0086F89C /* Products */,
+				01AB3A8C19DC7D255118377A /* Pods */,
+				FD2973044E3BECB20FB0019B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,8 +107,20 @@
 				210FF6E322B8A2120086F89C /* YZCallStack.m */,
 				210FF6E622B8A2120086F89C /* YZMonitorRunloop.h */,
 				210FF6E422B8A2120086F89C /* YZMonitorRunloop.m */,
+				21854FC322CA1D6200BDBE1E /* YZAppInfoUtil.h */,
+				21854FC222CA1D6100BDBE1E /* YZAppInfoUtil.m */,
+				215B89CC22CEF78000FD0BA7 /* YZLogFile.h */,
+				215B89CD22CEF78000FD0BA7 /* YZLogFile.m */,
 			);
 			path = MonitorRunLoop;
+			sourceTree = "<group>";
+		};
+		FD2973044E3BECB20FB0019B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				62DA2D286E59072717746B45 /* libPods-YZMonitorRunLoopDemo.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -96,6 +130,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 210FF6DF22B8A1F20086F89C /* Build configuration list for PBXNativeTarget "YZMonitorRunLoopDemo" */;
 			buildPhases = (
+				20B601ED7D9A2BB0E1196A25 /* [CP] Check Pods Manifest.lock */,
 				210FF6C522B8A1EF0086F89C /* Sources */,
 				210FF6C622B8A1EF0086F89C /* Frameworks */,
 				210FF6C722B8A1EF0086F89C /* Resources */,
@@ -154,6 +189,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		20B601ED7D9A2BB0E1196A25 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-YZMonitorRunLoopDemo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		210FF6C522B8A1EF0086F89C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -161,7 +221,9 @@
 			files = (
 				210FF6D122B8A1EF0086F89C /* ViewController.m in Sources */,
 				210FF6E722B8A2120086F89C /* YZCallStack.m in Sources */,
+				21854FC422CA1D6200BDBE1E /* YZAppInfoUtil.m in Sources */,
 				210FF6DC22B8A1F20086F89C /* main.m in Sources */,
+				215B89CE22CEF78000FD0BA7 /* YZLogFile.m in Sources */,
 				210FF6CE22B8A1EF0086F89C /* AppDelegate.m in Sources */,
 				210FF6E822B8A2120086F89C /* YZMonitorRunloop.m in Sources */,
 			);
@@ -303,11 +365,13 @@
 		};
 		210FF6E022B8A1F20086F89C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C4D6B9591EC9F0A287C14E7 /* Pods-YZMonitorRunLoopDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4BW29X768A;
 				INFOPLIST_FILE = YZMonitorRunLoopDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -320,11 +384,13 @@
 		};
 		210FF6E122B8A1F20086F89C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EBE06FB8ECFBD9CD170F977E /* Pods-YZMonitorRunLoopDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4BW29X768A;
 				INFOPLIST_FILE = YZMonitorRunLoopDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

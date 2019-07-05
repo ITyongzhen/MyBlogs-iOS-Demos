@@ -9,6 +9,8 @@
 #import "YZMonitorRunloop.h"
 #import <execinfo.h>
 #import "YZCallStack.h"
+#import "YZAppInfoUtil.h"
+#import "YZLogFile.h"
 /**
  原理：利用观察Runloop各种状态变化的持续时间来检测计算是否发生卡顿
  一次有效卡顿采用了“N次卡顿超过阈值T”的判定策略，即一个时间段内卡顿的次数累计大于N时才触发采集和上报：举例，卡顿阈值T=500ms、卡顿次数N=1，可以判定为单次耗时较长的一次有效卡顿；而卡顿阈值T=50ms、卡顿次数N=5，可以判定为频次较快的一次有效卡顿
@@ -52,8 +54,8 @@ static const NSInteger MXRMonitorRunloopStandstillCount = 1;
 //重写set方法，用KVO监听
 - (void)setLimitMillisecond:(int)limitMillisecond{
     [self willChangeValueForKey:@"limitMillisecond"];
-     _limitMillisecond = limitMillisecond >= MXRMonitorRunloopMinOneStandstillMillisecond ? limitMillisecond : MXRMonitorRunloopMinOneStandstillMillisecond;
-     [self didChangeValueForKey:@"limitMillisecond"];
+    _limitMillisecond = limitMillisecond >= MXRMonitorRunloopMinOneStandstillMillisecond ? limitMillisecond : MXRMonitorRunloopMinOneStandstillMillisecond;
+    [self didChangeValueForKey:@"limitMillisecond"];
 }
 - (void)setStandstillCount:(int)standstillCount
 {
@@ -72,7 +74,9 @@ static const NSInteger MXRMonitorRunloopStandstillCount = 1;
 {
     self.isCancel = YES;
     if(!_observer) return;
+//    将observer从当前thread的runloop中移除
     CFRunLoopRemoveObserver(CFRunLoopGetMain(), _observer, kCFRunLoopCommonModes);
+//    释放 observer
     CFRelease(_observer);
     _observer = NULL;
 }
@@ -80,10 +84,9 @@ static const NSInteger MXRMonitorRunloopStandstillCount = 1;
 static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info)
 {
     if (activity != kCFRunLoopBeforeWaiting) {
-        NSLog(@"-%s-- activity == %lu",__func__,activity);
+        //        NSLog(@"-%s-- activity == %lu",__func__,activity);
     }
     
-//
     YZMonitorRunloop *instance = [YZMonitorRunloop sharedInstance];
     // 记录状态值
     instance->_activity = activity;
@@ -94,32 +97,39 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
 }
 
 -(void)registerObserver{
+//    1. 设置Runloop observer的运行环境
     CFRunLoopObserverContext context = {0, (__bridge void *)self, NULL, NULL};
-    // 创建Runloop observer对象
+    // 2. 创建Runloop observer对象
+  
+//    第一个参数：用于分配observer对象的内存
+//    第二个参数：用以设置observer所要关注的事件
+//    第三个参数：用于标识该observer是在第一次进入runloop时执行还是每次进入runloop处理时均执行
+//    第四个参数：用于设置该observer的优先级
+//    第五个参数：用于设置该observer的回调函数
+//    第六个参数：用于设置该observer的运行环境
     _observer = CFRunLoopObserverCreate(kCFAllocatorDefault,
                                         kCFRunLoopAllActivities,
                                         YES,
                                         0,
                                         &runLoopObserverCallBack,
                                         &context);
-    // 将新建的observer加入到当前thread的runloop
+    // 3. 将新建的observer加入到当前thread的runloop
     CFRunLoopAddObserver(CFRunLoopGetMain(), _observer, kCFRunLoopCommonModes);
     // 创建信号  dispatchSemaphore的知识参考：https://www.jianshu.com/p/24ffa819379c
     _semaphore = dispatch_semaphore_create(0); ////Dispatch Semaphore保证同步
     
     __weak __typeof(self) weakSelf = self;
     
-    dispatch_queue_t queue = dispatch_queue_create("kadun", NULL);
+    //    dispatch_queue_t queue = dispatch_queue_create("kadun", NULL);
     
     // 在子线程监控时长
-//    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-      dispatch_async(queue, ^{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        //      dispatch_async(queue, ^{
         __strong __typeof(weakSelf) strongSelf = weakSelf;
         if (!strongSelf) {
             return;
         }
         while (YES) {
-//            NSLog(@"2222self->_activity = %lu  thread = %@",self->_activity,[NSThread currentThread]);
             if (strongSelf.isCancel) {
                 return;
             }
@@ -127,30 +137,24 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
             // 等待信号量：如果信号量是0，则阻塞当前线程；如果信号量大于0，则此函数会把信号量-1，继续执行线程。此处超时时间设为limitMillisecond 毫秒。
             // 返回值：如果线程是唤醒的，则返回非0，否则返回0
             long semaphoreWait = dispatch_semaphore_wait(self->_semaphore, dispatch_time(DISPATCH_TIME_NOW, strongSelf.limitMillisecond * NSEC_PER_MSEC));
-//             NSLog(@"333eagle.semaphoreWait = %ld     self->_activity = %lu thread = %@" ,semaphoreWait,self->_activity,[NSThread currentThread]);
-            if (self->_activity != kCFRunLoopBeforeWaiting) {
-                NSLog(@"333eagle.semaphoreWait = %ld     self->_activity = %lu thread = %@   strongSelf.limitMillisecond=%d" ,semaphoreWait,self->_activity,[NSThread currentThread],strongSelf.limitMillisecond);
-            }
+            
             if (semaphoreWait != 0) {
                 
                 // 如果 RunLoop 的线程，进入睡眠前方法的执行时间过长而导致无法进入睡眠(kCFRunLoopBeforeSources)，或者线程唤醒后接收消息时间过长(kCFRunLoopAfterWaiting)而无法进入下一步的话，就可以认为是线程受阻。
                 //两个runloop的状态，BeforeSources和AfterWaiting这两个状态区间时间能够监测到是否卡顿
-                if (self->_activity != kCFRunLoopBeforeWaiting) {
-                    NSLog(@"eagle.semaphoreWait = %ld     self->_activity = %lu thread = %@" ,semaphoreWait,self->_activity,[NSThread currentThread]);
-                }
                 if (self->_activity == kCFRunLoopBeforeSources || self->_activity == kCFRunLoopAfterWaiting) {
                     
-                    NSLog(@"111strongSelf.countTime = %ld     strongSelf.standstillCount = %d",strongSelf.countTime,strongSelf.standstillCount);
                     if (++strongSelf.countTime < strongSelf.standstillCount){
                         NSLog(@"%ld",strongSelf.countTime);
                         continue;
                     }
                     [strongSelf logStack];
-                     NSLog(@"222strongSelf.countTime = %ld     strongSelf.standstillCount = %d",strongSelf.countTime,strongSelf.standstillCount);
                     [strongSelf printLogTrace];
                     
                     NSString *backtrace = [YZCallStack yz_backtraceOfMainThread];
                     NSLog(@"++++%@",backtrace);
+                    
+                    [[YZLogFile sharedInstance] writefile:backtrace];
                     
                     if (strongSelf.callbackWhenStandStill) {
                         strongSelf.callbackWhenStandStill();
@@ -161,6 +165,8 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
         }
     });
 }
+
+
 
 - (void)logStack
 {
@@ -179,5 +185,6 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
 - (void)printLogTrace{
     NSLog(@"==========检测到卡顿之后调用堆栈==========\n %@ \n",_backtrace);
 }
+
 
 @end
