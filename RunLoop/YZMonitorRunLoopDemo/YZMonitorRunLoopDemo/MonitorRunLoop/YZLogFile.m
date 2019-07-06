@@ -2,7 +2,7 @@
 //  YZLogFile.m
 //  YZMonitorRunLoopDemo
 //
-//  Created by eagle on 2019/7/5.
+//  Created by eagle on 2019/6/18.
 //  Copyright © 2019 yongzhen. All rights reserved.
 //
 
@@ -68,7 +68,7 @@ static const float DefaultMAXLogFileLength = 50;
             NSLog(@" 上传到服务器");
             [self update];
             [self clearLocalLogFile];
-             [self writeToLocalLogFilePath:filePath contentStr:string];
+            [self writeToLocalLogFilePath:filePath contentStr:string];
         }else{
             NSLog(@"继续写入本地");
             [self writeToLocalLogFilePath:filePath contentStr:string];
@@ -115,8 +115,6 @@ static const float DefaultMAXLogFileLength = 50;
 // 上传日志
 -(void)update{
     NSString *zipPath = [self getLogZipPath];
-    
-    //    NSString *filePaths = [self getLogPath];
     NSString *password = nil;
     NSMutableArray *filePaths = [[NSMutableArray alloc] init];
     [filePaths addObject:[self getLogPath]];
