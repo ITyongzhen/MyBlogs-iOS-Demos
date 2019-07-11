@@ -226,14 +226,17 @@ id _object_get_associative_reference(id object, void *key) {
         AssociationsManager manager;
         AssociationsHashMap &associations(manager.associations());
         disguised_ptr_t disguised_object = DISGUISE(object);
+        // 查找 disguised_object
         AssociationsHashMap::iterator i = associations.find(disguised_object);
         if (i != associations.end()) {
             ObjectAssociationMap *refs = i->second;
+            //查看key 和value
             ObjectAssociationMap::iterator j = refs->find(key);
             if (j != refs->end()) {
                 ObjcAssociation &entry = j->second;
                 value = entry.value();
                 policy = entry.policy();
+                // 存在key 和value 就取出对应的值
                 if (policy & OBJC_ASSOCIATION_GETTER_RETAIN) {
                     objc_retain(value);
                 }
@@ -241,6 +244,7 @@ id _object_get_associative_reference(id object, void *key) {
         }
     }
     if (value && (policy & OBJC_ASSOCIATION_GETTER_AUTORELEASE)) {
+        // 不存在key value 就把这个关联对象擦除
         objc_autorelease(value);
     }
     return value;
@@ -271,10 +275,13 @@ struct ReleaseValue {
 void _object_set_associative_reference(id object, void *key, id value, uintptr_t policy) {
     // retain the new value (if any) outside the lock.
     ObjcAssociation old_association(0, nil);
+    // 根据value的值通过acquireValue函数获取得到new_value
     id new_value = value ? acquireValue(value, policy) : nil;
     {
         AssociationsManager manager;
+        // 获取 manager 内的 AssociationsHashMap 也就是 associations
         AssociationsHashMap &associations(manager.associations());
+        // object 经过 DISGUISE 函数被转化为了disguised_ptr_t类型的disguised_object
         disguised_ptr_t disguised_object = DISGUISE(object);
         if (new_value) {
             // break any existing association.
@@ -285,8 +292,10 @@ void _object_set_associative_reference(id object, void *key, id value, uintptr_t
                 ObjectAssociationMap::iterator j = refs->find(key);
                 if (j != refs->end()) {
                     old_association = j->second;
+                    // policy和new_value 作为键值对存入了ObjcAssociation
                     j->second = ObjcAssociation(policy, new_value);
                 } else {
+                    // policy和new_value 作为键值对存入了ObjcAssociation
                     (*refs)[key] = ObjcAssociation(policy, new_value);
                 }
             } else {
@@ -297,6 +306,7 @@ void _object_set_associative_reference(id object, void *key, id value, uintptr_t
                 object->setHasAssociatedObjects();
             }
         } else {
+            // 来到这里说明，value为空
             // setting the association to nil breaks the association.
             AssociationsHashMap::iterator i = associations.find(disguised_object);
             if (i !=  associations.end()) {
@@ -304,6 +314,7 @@ void _object_set_associative_reference(id object, void *key, id value, uintptr_t
                 ObjectAssociationMap::iterator j = refs->find(key);
                 if (j != refs->end()) {
                     old_association = j->second;
+                    //移除关联对象
                     refs->erase(j);
                 }
             }
@@ -321,7 +332,7 @@ void _object_remove_assocations(id object) {
         if (associations.size() == 0) return;
         disguised_ptr_t disguised_object = DISGUISE(object);
         AssociationsHashMap::iterator i = associations.find(disguised_object);
-        if (i != associations.end()) {
+        if (i != associations.end()) { // 遍历AssociationsHashMap 取出值
             // copy all of the associations that need to be removed.
             ObjectAssociationMap *refs = i->second;
             for (ObjectAssociationMap::iterator j = refs->begin(), end = refs->end(); j != end; ++j) {
@@ -329,6 +340,7 @@ void _object_remove_assocations(id object) {
             }
             // remove the secondary table.
             delete refs;
+            // 删除
             associations.erase(i);
         }
     }

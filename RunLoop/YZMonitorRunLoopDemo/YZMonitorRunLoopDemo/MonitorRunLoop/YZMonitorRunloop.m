@@ -74,9 +74,9 @@ static const NSInteger MXRMonitorRunloopStandstillCount = 1;
 {
     self.isCancel = YES;
     if(!_observer) return;
-//    将observer从当前thread的runloop中移除
+    //    将observer从当前thread的runloop中移除
     CFRunLoopRemoveObserver(CFRunLoopGetMain(), _observer, kCFRunLoopCommonModes);
-//    释放 observer
+    //    释放 observer
     CFRelease(_observer);
     _observer = NULL;
 }
@@ -97,16 +97,16 @@ static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActi
 }
 
 -(void)registerObserver{
-//    1. 设置Runloop observer的运行环境
+    //    1. 设置Runloop observer的运行环境
     CFRunLoopObserverContext context = {0, (__bridge void *)self, NULL, NULL};
     // 2. 创建Runloop observer对象
-  
-//    第一个参数：用于分配observer对象的内存
-//    第二个参数：用以设置observer所要关注的事件
-//    第三个参数：用于标识该observer是在第一次进入runloop时执行还是每次进入runloop处理时均执行
-//    第四个参数：用于设置该observer的优先级
-//    第五个参数：用于设置该observer的回调函数
-//    第六个参数：用于设置该observer的运行环境
+    
+    //    第一个参数：用于分配observer对象的内存
+    //    第二个参数：用以设置observer所要关注的事件
+    //    第三个参数：用于标识该observer是在第一次进入runloop时执行还是每次进入runloop处理时均执行
+    //    第四个参数：用于设置该observer的优先级
+    //    第五个参数：用于设置该observer的回调函数
+    //    第六个参数：用于设置该observer的运行环境
     _observer = CFRunLoopObserverCreate(kCFAllocatorDefault,
                                         kCFRunLoopAllActivities,
                                         YES,

@@ -102,7 +102,7 @@
 }
 
 + (NSString *)locationAuthority{
-    NSString *authority = @"";    
+    NSString *authority = @"";
     if ([CLLocationManager locationServicesEnabled]) {
         CLAuthorizationStatus state = [CLLocationManager authorizationStatus];
         if (state == kCLAuthorizationStatusNotDetermined) {
@@ -185,7 +185,7 @@
 
 + (NSString *)photoAuthority{
     NSString *authority = @"";
-    #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0 //iOS 8.0以下使用AssetsLibrary.framework
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0 //iOS 8.0以下使用AssetsLibrary.framework
     ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
     switch (status) {
         case ALAuthorizationStatusNotDetermined:    //用户还没有选择
@@ -211,7 +211,7 @@
         default:
             break;
     }
-    #else   //iOS 8.0以上使用Photos.framework
+#else   //iOS 8.0以上使用Photos.framework
     PHAuthorizationStatus current = [PHPhotoLibrary authorizationStatus];
     switch (current) {
         case PHAuthorizationStatusNotDetermined:    //用户还没有选择(第一次)
@@ -237,7 +237,7 @@
         default:
             break;
     }
-    #endif
+#endif
     return authority;
 }
 

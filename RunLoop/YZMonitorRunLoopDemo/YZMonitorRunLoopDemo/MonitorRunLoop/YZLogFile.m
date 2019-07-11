@@ -74,7 +74,7 @@ static const float DefaultMAXLogFileLength = 50;
             [self writeToLocalLogFilePath:filePath contentStr:string];
         }
     }
- 
+    
 }
 
 -(void)writeToLocalLogFilePath:(NSString *)localFilePath contentStr:(NSString *)contentStr{
@@ -99,7 +99,7 @@ static const float DefaultMAXLogFileLength = 50;
 -(BOOL)clearLocalLogFile{
     NSFileManager *myFileManager = [NSFileManager defaultManager];
     return [myFileManager removeItemAtPath:[self getLogPath] error:nil];
-  
+    
 }
 
 -(BOOL)clearLocalLogZipFile{
@@ -127,7 +127,7 @@ static const float DefaultMAXLogFileLength = 50;
         NSLog(@"压缩失败");
     }
     
- 
+    
 }
 
 @end
