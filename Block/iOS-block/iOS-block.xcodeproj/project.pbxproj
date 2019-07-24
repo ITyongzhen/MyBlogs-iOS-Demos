@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		210BA58A22D8B3EA00A49ED0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 210BA58922D8B3EA00A49ED0 /* main.m */; };
+		2168A09A22E0A5AB00392B9B /* YZPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 2168A09922E0A5AB00392B9B /* YZPerson.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +27,8 @@
 		210BA58622D8B3EA00A49ED0 /* iOS-block */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "iOS-block"; sourceTree = BUILT_PRODUCTS_DIR; };
 		210BA58922D8B3EA00A49ED0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		210BA59022D8B63E00A49ED0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		2168A09822E0A5AB00392B9B /* YZPerson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YZPerson.h; sourceTree = "<group>"; };
+		2168A09922E0A5AB00392B9B /* YZPerson.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YZPerson.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +63,8 @@
 			children = (
 				210BA59022D8B63E00A49ED0 /* main.cpp */,
 				210BA58922D8B3EA00A49ED0 /* main.m */,
+				2168A09822E0A5AB00392B9B /* YZPerson.h */,
+				2168A09922E0A5AB00392B9B /* YZPerson.m */,
 			);
 			path = "iOS-block";
 			sourceTree = "<group>";
@@ -121,6 +126,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				210BA58A22D8B3EA00A49ED0 /* main.m in Sources */,
+				2168A09A22E0A5AB00392B9B /* YZPerson.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

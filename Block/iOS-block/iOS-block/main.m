@@ -7,31 +7,75 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "YZPerson.h"
 // typedef定义
 //typedef int (^MyBlockFour3)(int);
 //
 //@property (nonatomic,copy) MyBlockFour3 block;
 
-static struct __main_block_desc_0 {
-    size_t reserved;
-    size_t Block_size; //block占用的内存大小
+void test4(){
+    static struct __main_block_desc_0 {
+        size_t reserved;
+        size_t Block_size; //block占用的内存大小
+    };
+    
+    struct __block_impl {
+        void *isa;
+        int Flags;
+        int Reserved;
+        void *FuncPtr;
+    };
+    
+    struct __main_block_impl_0 {
+        struct __block_impl impl;
+        struct __main_block_desc_0* Desc;
+        int age;
+        
+    };
+    
+   
+    
+    int age1 = 11;
+    static int height1 = 22;
+    
+    // 定义Block
+    typedef void (^YZBlock)(void);
 };
 
-struct __block_impl {
-    void *isa;
-    int Flags;
-    int Reserved;
-    void *FuncPtr;
-};
+// 返回值为Block的函数
+//YZBlock myblock()
+//{
+//    int a = 6;
+//    return ^{
+//        NSLog(@"--------- %d",a);
+//    };
+//}
 
-struct __main_block_impl_0 {
-    struct __block_impl impl;
-    struct __main_block_desc_0* Desc;
-    int age;
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+       __block YZPerson *person = [[YZPerson alloc] init];
+        person.age = 10;
+        
+//        __weak YZPerson *weakPerson = person;
+//          __unsafe_unretained YZPerson *weakPerson = person;
+        
+        
+        person.block = ^{
+            NSLog(@"person.age--- %d",person.age);
+            //这一句不能少
+            person = nil;
+        };
+        // 必须调用一次
+        person.block();
+        NSLog(@"--------");
 
-};
+    }
+    return 0;
+}
 
-void test(){
+
+
+void test5(){
     
     //无参无返回值 定义
     void (^MyBlockOne)(void) = ^{
@@ -66,91 +110,74 @@ void test(){
         return a * 2;
     };
     MyBlockFour(4);
+};
+void test3(){
+    
+    NSArray *array = @[@1,@4,@5];
+    [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        // code
+    }];
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+    });
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //code to be executed after a specified delay
+    });
+    
+    
+    int b = 20;
+    YZBlock Block2 = ^{
+        NSLog(@"abc %d",b);
+    };
+    NSLog(@" [Block2 class] = %@", [Block2 class]);
+    
+    
 }
 
-int age1 = 11;
-static int height1 = 22;
-
-// 定义Block
-typedef void (^YZBlock)(void);
-
-// 返回值为Block的函数
-//YZBlock myblock()
-//{
-//    int a = 6;
-//    return ^{
-//        NSLog(@"--------- %d",a);
-//    };
-//}
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        
-        NSArray *array = @[@1,@4,@5];
-        [array enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            // code
-        }];
-        
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            
-        });
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //code to be executed after a specified delay
-        });
-        
-        
-        int b = 20;
-        YZBlock Block2 = ^{
-            NSLog(@"abc %d",b);
-        };
-         NSLog(@" [Block2 class] = %@", [Block2 class]);
-        
-        
-//        YZBlock Block = myblock();
-//        Block();
-//        NSLog(@" [Block class] = %@", [Block class]);
-        
-//
-//        void (^block)(void) =  ^{
-//            NSLog(@"123");
-//        };
-//
-//        NSLog(@"没有访问auto block.class = %@",[block class]);
-//
-//
-//        auto int a = 10;
-//        void (^block1)(void) =  ^{
-//            NSLog(@"a = %d",a);
-//        };
-//
-//        NSLog(@"访问了auto block1.class = %@",[block1 class]);
-//
-//
-//        NSLog(@"访问量auto 并且copy block1-copy.class = %@",[[block1 class] copy]);
-        
-        
-//        NSLog(@"block.class.superclass = %@",[[block class] superclass]);
-//        NSLog(@"block.class.superclass.superclass = %@",[[[block class] superclass] superclass]);
-//        NSLog(@"block.class.superclass.superclass.superclass = %@",[[[[block class] superclass] superclass] superclass]);
-//        block();
-        
-//        static int height  = 30;
-//        int age = 20;
-//        void (^block)(void) =  ^{
-//            NSLog(@"age1 is %d height1 = %d",age1,height1);
-//        };
-//        age1 = 25;
-//        height1 = 35;
-//        block();
-        
-      
-        
-      
-
-    }
-    return 0;
+void test2(){
+    //        YZBlock Block = myblock();
+    //        Block();
+    //        NSLog(@" [Block class] = %@", [Block class]);
+    
+    //
+    //        void (^block)(void) =  ^{
+    //            NSLog(@"123");
+    //        };
+    //
+    //        NSLog(@"没有访问auto block.class = %@",[block class]);
+    //
+    //
+    //        auto int a = 10;
+    //        void (^block1)(void) =  ^{
+    //            NSLog(@"a = %d",a);
+    //        };
+    //
+    //        NSLog(@"访问了auto block1.class = %@",[block1 class]);
+    //
+    //
+    //        NSLog(@"访问量auto 并且copy block1-copy.class = %@",[[block1 class] copy]);
+    
+    
+    //        NSLog(@"block.class.superclass = %@",[[block class] superclass]);
+    //        NSLog(@"block.class.superclass.superclass = %@",[[[block class] superclass] superclass]);
+    //        NSLog(@"block.class.superclass.superclass.superclass = %@",[[[[block class] superclass] superclass] superclass]);
+    //        block();
+    
+    //        static int height  = 30;
+    //        int age = 20;
+    //        void (^block)(void) =  ^{
+    //            NSLog(@"age1 is %d height1 = %d",age1,height1);
+    //        };
+    //        age1 = 25;
+    //        height1 = 35;
+    //        block();
+    
+    
+    
+    
 }
 
 //void test1(){

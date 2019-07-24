@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "YZPerson.h"
+
 typedef int (^MyBlock)(int a, int b);
 @interface ViewController ()
 @property (nonatomic,copy) MyBlock myBlockOne;
@@ -17,13 +19,21 @@ typedef int (^MyBlock)(int a, int b);
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+   
+    YZPerson *person = [[YZPerson alloc] init];
+    person.age = 10;
+    person.block = ^{
+        NSLog(@"person---%p",person);
+    };
+    NSLog(@"--------");
+}
+
+-(void)test{
     self.myBlockOne = ^int(int a, int b) {
         return a + b;
     };
     
     self.myBlockOne(2, 5);
 }
-
-
 
 @end
