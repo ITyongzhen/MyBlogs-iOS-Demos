@@ -242,7 +242,8 @@ LExit$0:
 
 	ldp	p17, p9, [x12]		// {imp, sel} = *bucket
 1:	cmp	p9, p1			// if (bucket->sel != _cmd)
-	b.ne	2f			//     scan more
+	b.ne	2f			//     scan
+    //缓存命中
 	CacheHit $0			// call or return imp
 	
 2:	// not hit: p12 = not-hit bucket
@@ -299,19 +300,22 @@ _objc_debug_taggedpointer_ext_classes:
 	.fill 256, 8, 0
 #endif
 
+    //1.进入objcmsgSend
 	ENTRY _objc_msgSend
 	UNWIND _objc_msgSend, NoFrame
-
+    // x0 recevier
+    // 消息接收者  消息名称
 	cmp	p0, #0			// nil check and tagged pointer check
 #if SUPPORT_TAGGED_POINTERS
+    //2.isa 优化
 	b.le	LNilOrTagged		//  (MSB tagged pointer looks negative)
 #else
 	b.eq	LReturnZero
 #endif
 	ldr	p13, [x0]		// p13 = isa
 	GetClassFromIsa_p16 p13		// p16 = class
-LGetIsaDone:
-	CacheLookup NORMAL		// calls imp or objc_msgSend_uncached
+LGetIsaDone: // 3.isa优化完成
+	CacheLookup NORMAL		//4.执行 CacheLookup NORMAL // calls imp or objc_msgSend_uncached
 
 #if SUPPORT_TAGGED_POINTERS
 LNilOrTagged:
@@ -456,7 +460,7 @@ LLookup_Nil:
 
 	// receiver and selector already in x0 and x1
 	mov	x2, x16
-	bl	__class_lookupMethodAndLoadCache3
+	bl	__class_lookupMethodAndLoadCache3 //6.方法为_class_lookupMethodAndLoadCache3调用的汇编语言
 
 	// IMP in x0
 	mov	x17, x0
@@ -484,7 +488,7 @@ LLookup_Nil:
 	// THIS IS NOT A CALLABLE C FUNCTION
 	// Out-of-band p16 is the class to search
 	
-	MethodTableLookup
+	MethodTableLookup //5.查找IMP
 	TailCallFunctionPointer x17
 
 	END_ENTRY __objc_msgSend_uncached
@@ -536,6 +540,7 @@ LGetImpMiss:
 	ENTRY __objc_msgForward
 
 	adrp	x17, __objc_forward_handler@PAGE
+    // 这里进去之后，不开源了
 	ldr	p17, [x17, __objc_forward_handler@PAGEOFF]
 	TailCallFunctionPointer x17
 	

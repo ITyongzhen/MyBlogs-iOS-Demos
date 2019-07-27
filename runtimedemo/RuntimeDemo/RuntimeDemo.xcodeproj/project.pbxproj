@@ -13,6 +13,7 @@
 		2194E88A22E70F1700CC9869 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2194E88922E70F1700CC9869 /* Assets.xcassets */; };
 		2194E88D22E70F1700CC9869 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2194E88B22E70F1700CC9869 /* LaunchScreen.storyboard */; };
 		2194E89022E70F1700CC9869 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2194E88F22E70F1700CC9869 /* main.m */; };
+		2194E8AC22E8334700CC9869 /* YZPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 2194E8AB22E8334700CC9869 /* YZPerson.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		2194E88C22E70F1700CC9869 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2194E88E22E70F1700CC9869 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2194E88F22E70F1700CC9869 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2194E8AA22E8334700CC9869 /* YZPerson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YZPerson.h; sourceTree = "<group>"; };
+		2194E8AB22E8334700CC9869 /* YZPerson.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YZPerson.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +65,8 @@
 				2194E88122E70F1200CC9869 /* AppDelegate.m */,
 				2194E88322E70F1200CC9869 /* ViewController.h */,
 				2194E88422E70F1200CC9869 /* ViewController.m */,
+				2194E8AA22E8334700CC9869 /* YZPerson.h */,
+				2194E8AB22E8334700CC9869 /* YZPerson.m */,
 				2194E88622E70F1200CC9869 /* Main.storyboard */,
 				2194E88922E70F1700CC9869 /* Assets.xcassets */,
 				2194E88B22E70F1700CC9869 /* LaunchScreen.storyboard */,
@@ -144,6 +149,7 @@
 				2194E88522E70F1200CC9869 /* ViewController.m in Sources */,
 				2194E89022E70F1700CC9869 /* main.m in Sources */,
 				2194E88222E70F1200CC9869 /* AppDelegate.m in Sources */,
+				2194E8AC22E8334700CC9869 /* YZPerson.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

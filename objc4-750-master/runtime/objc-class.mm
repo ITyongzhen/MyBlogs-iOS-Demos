@@ -591,6 +591,7 @@ static void _class_resolveClassMethod(Class cls, SEL sel, id inst)
                              NO/*initialize*/, YES/*cache*/, NO/*resolver*/);
 
     if (resolved  &&  PrintResolving) {
+         // 这里只是一些打印
         if (imp) {
             _objc_inform("RESOLVE: method %c[%s %s] "
                          "dynamically resolved to %p", 
@@ -633,6 +634,7 @@ static void _class_resolveInstanceMethod(Class cls, SEL sel, id inst)
                              NO/*initialize*/, YES/*cache*/, NO/*resolver*/);
 
     if (resolved  &&  PrintResolving) {
+        // 这里只是一些打印
         if (imp) {
             _objc_inform("RESOLVE: method %c[%s %s] "
                          "dynamically resolved to %p", 
@@ -657,13 +659,14 @@ static void _class_resolveInstanceMethod(Class cls, SEL sel, id inst)
 * Returns nothing; any result would be potentially out-of-date already.
 * Does not check if the method already exists.
 **********************************************************************/
+// 动态方法解析
 void _class_resolveMethod(Class cls, SEL sel, id inst)
 {
-    if (! cls->isMetaClass()) {
+    if (! cls->isMetaClass()) { //如果不是元类对象
         // try [cls resolveInstanceMethod:sel]
         _class_resolveInstanceMethod(cls, sel, inst);
     } 
-    else {
+    else { // 是元类对象
         // try [nonMetaClass resolveClassMethod:sel]
         // and [cls resolveInstanceMethod:sel]
         _class_resolveClassMethod(cls, sel, inst);

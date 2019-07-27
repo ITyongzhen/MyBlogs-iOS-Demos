@@ -4669,6 +4669,7 @@ static method_t *findMethodInSortedMethodList(SEL key, const method_list_t *list
     uintptr_t keyValue = (uintptr_t)key;
     uint32_t count;
     
+    // 二分查找
     for (count = list->count; count != 0; count >>= 1) {
         probe = base + (count >> 1);
         
@@ -4704,9 +4705,11 @@ static method_t *search_method_list(const method_list_t *mlist, SEL sel)
     int methodListHasExpectedSize = mlist->entsize() == sizeof(method_t);
     
     if (__builtin_expect(methodListIsFixedUp && methodListHasExpectedSize, 1)) {
+        // 排好序的查找 (二分查找)
         return findMethodInSortedMethodList(sel, mlist);
     } else {
         // Linear search of unsorted method list
+        // 线性查找
         for (auto& meth : *mlist) {
             if (meth.name == sel) return &meth;
         }
@@ -4840,6 +4843,7 @@ log_and_fill_cache(Class cls, IMP imp, SEL sel, id receiver, Class implementer)
 **********************************************************************/
 IMP _class_lookupMethodAndLoadCache3(id obj, SEL sel, Class cls)
 {
+    
     return lookUpImpOrForward(cls, sel, obj, 
                               YES/*initialize*/, NO/*cache*/, YES/*resolver*/);
 }
@@ -4861,7 +4865,7 @@ IMP lookUpImpOrForward(Class cls, SEL sel, id inst,
                        bool initialize, bool cache, bool resolver)
 {
     IMP imp = nil;
-    bool triedResolver = NO;
+    bool triedResolver = NO; //是否动态解析过的标记
 
     runtimeLock.assertUnlocked();
 
@@ -4880,7 +4884,7 @@ IMP lookUpImpOrForward(Class cls, SEL sel, id inst,
     // the cache was re-filled with the old value after the cache flush on
     // behalf of the category.
 
-    runtimeLock.lock();
+    runtimeLock.lock(); //加锁，内部用的是mutex_tt
     checkIsKnownClass(cls);
 
     if (!cls->isRealized()) {
@@ -4902,23 +4906,26 @@ IMP lookUpImpOrForward(Class cls, SEL sel, id inst,
     runtimeLock.assertLocked();
 
     // Try this class's cache.
-
+    // 这里先查缓存，虽然前面汇编里面已经查过了。但是有可能动态添加，导致缓存有更新
     imp = cache_getImp(cls, sel);
+    //如果查到了，就直接跳转到最后
     if (imp) goto done;
-
+    //来到这里，说明缓存没有
     // Try this class's method lists.
-    {
+    { // 查找方法列表
         Method meth = getMethodNoSuper_nolock(cls, sel);
         if (meth) {
             log_and_fill_cache(cls, meth->imp, sel, inst, cls);
             imp = meth->imp;
+            //如果查到了，就直接跳转到最后
             goto done;
         }
     }
 
     // Try superclass caches and method lists.
-    {
+    { //查找父类的缓存和方法列表
         unsigned attempts = unreasonableClassCount();
+        // for循环层层向上找
         for (Class curClass = cls->superclass;
              curClass != nil;
              curClass = curClass->superclass)
@@ -4929,11 +4936,14 @@ IMP lookUpImpOrForward(Class cls, SEL sel, id inst,
             }
             
             // Superclass cache.
+            // 父类缓存
             imp = cache_getImp(curClass, sel);
             if (imp) {
                 if (imp != (IMP)_objc_msgForward_impcache) {
                     // Found the method in a superclass. Cache it in this class.
+                    // 如果父类缓存有，也要缓存一份到自己的缓存中
                     log_and_fill_cache(cls, imp, sel, inst, curClass);
+                    //跳转到最后
                     goto done;
                 }
                 else {
@@ -4944,37 +4954,39 @@ IMP lookUpImpOrForward(Class cls, SEL sel, id inst,
                 }
             }
             
-            // Superclass method list.
+            // Superclass method list. 查找父类方法列表
             Method meth = getMethodNoSuper_nolock(curClass, sel);
             if (meth) {
+                /// 如果父类方法列表有，也要缓存一份到自己的缓存中
                 log_and_fill_cache(cls, meth->imp, sel, inst, curClass);
                 imp = meth->imp;
+                //如果查到了，就跳转到最后
                 goto done;
             }
         }
     }
 
-    // No implementation found. Try method resolver once.
-
+    // 来到这里，进入第二阶段，动态方法解析阶段,而且要求没有动态解析过
     if (resolver  &&  !triedResolver) {
         runtimeLock.unlock();
         _class_resolveMethod(cls, sel, inst);
         runtimeLock.lock();
         // Don't cache the result; we don't hold the lock so it may have 
         // changed already. Re-do the search from scratch instead.
-        triedResolver = YES;
+        triedResolver = YES; //动态解析过，标记设为YES
+        // 回到查找缓存的地方开始查找，缓存中没有加过，这次去查找，可以再方法列表中查到
         goto retry;
     }
 
     // No implementation found, and method resolver didn't help. 
     // Use forwarding.
-
+    // 来到这里，说明进入第三阶段，消息转发阶段
     imp = (IMP)_objc_msgForward_impcache;
     cache_fill(cls, sel, imp, inst);
 
  done:
     runtimeLock.unlock();
-
+    // 返回方法地址
     return imp;
 }
 
@@ -5038,7 +5050,7 @@ objc_property_t class_getProperty(Class cls, const char *name)
     if (!cls  ||  !name) return nil;
 
     mutex_locker_t lock(runtimeLock);
-
+ 
     checkIsKnownClass(cls);
     
     assert(cls->isRealized());
