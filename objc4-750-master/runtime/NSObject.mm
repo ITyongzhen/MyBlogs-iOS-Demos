@@ -91,7 +91,7 @@ enum HaveNew { DontHaveNew = false, DoHaveNew = true };
 
 struct SideTable {
     spinlock_t slock;
-    RefcountMap refcnts;
+    RefcountMap refcnts;//refcnts是一个存放着对象引用计数的散列表
     weak_table_t weak_table;
 
     SideTable() {
@@ -922,9 +922,9 @@ class AutoreleasePoolPage
     static inline id *autoreleaseFast(id obj)
     {
         AutoreleasePoolPage *page = hotPage();
-        if (page && !page->full()) {
+        if (page && !page->full()) {//page没有满，就把obj对象加到page
             return page->add(obj);
-        } else if (page) {
+        } else if (page) {//page满了 创建新的page
             return autoreleaseFullPage(obj, page);
         } else {
             return autoreleaseNoPage(obj);
@@ -1011,6 +1011,7 @@ public:
     {
         assert(obj);
         assert(!obj->isTaggedPointer());
+        //再次调用autoreleaseFast
         id *dest __unused = autoreleaseFast(obj);
         assert(!dest  ||  dest == EMPTY_POOL_PLACEHOLDER  ||  *dest == obj);
         return obj;
@@ -1395,10 +1396,10 @@ size_t
 objc_object::sidetable_getExtraRC_nolock()
 {
     assert(isa.nonpointer);
-    SideTable& table = SideTables()[this];
+    SideTable& table = SideTables()[this]; // this 就是key  根据这个key取出value
     RefcountMap::iterator it = table.refcnts.find(this);
     if (it == table.refcnts.end()) return 0;
-    else return it->second >> SIDE_TABLE_RC_SHIFT;
+    else return it->second >> SIDE_TABLE_RC_SHIFT; // 取出的值 经过位运算之后返回
 }
 
 
@@ -1529,6 +1530,7 @@ objc_object::sidetable_setWeaklyReferenced_nolock()
 // rdar://20206767
 // return uintptr_t instead of bool so that the various raw-isa 
 // -release paths all return zero in eax
+//引用计数减少
 uintptr_t
 objc_object::sidetable_release(bool performDealloc)
 {
@@ -1552,7 +1554,7 @@ objc_object::sidetable_release(bool performDealloc)
         it->second -= SIDE_TABLE_RC_ONE;
     }
     table.unlock();
-    if (do_dealloc  &&  performDealloc) {
+    if (do_dealloc  &&  performDealloc) {// 来到这里，说明引用计数为0，调用dealloc释放
         ((void(*)(objc_object *, SEL))objc_msgSend)(this, SEL_dealloc);
     }
     return do_dealloc;
@@ -2286,7 +2288,7 @@ void arr_init(void)
 + (NSUInteger)retainCount {
     return ULONG_MAX;
 }
-
+// 引用计数器+1
 - (NSUInteger)retainCount {
     return ((id)self)->rootRetainCount();
 }

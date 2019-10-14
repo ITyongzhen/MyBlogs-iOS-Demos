@@ -9,22 +9,36 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import "Person.h"
+#import "AppModel.h"
+#import "Car.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-//        Person *per = [[Person alloc]init];
-//        [per run];
+        [[AppModel sharedInstance] runModuleFunc:@"YZPerson" :@"run" :nil hasReturn:NO];
+        id k;
+        {
+        Car *car = [[Car alloc] init];
+        car.price = 110;
+            
+            k = car;
+        }
         
-        NSDate *date = @"123";
-        int a = [date isKindOfClass:[NSString class]];
-        int b = [date isMemberOfClass:[NSString class]];
-        
-        int c = [date isKindOfClass:[NSDate class]];
-        int d = [date isMemberOfClass:[NSDate class]];
-        [Person run];
+        NSNumber *num = @20;
+        NSLog(@"num %p",num);
+//
+//       [[AppModel sharedInstance] runModuleFunc:@"YZPerson" :@"getDoubleWithPrice:" :@[car] hasReturn:YES];
+         NSLog(@"car地址");
     }
     return 0;
 }
+
+
+
+
+void rest2(){
+    [Person run];
+}
+
 
 void test1(){
     

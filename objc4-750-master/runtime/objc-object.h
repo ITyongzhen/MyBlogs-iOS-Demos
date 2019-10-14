@@ -577,7 +577,7 @@ objc_object::rootRelease(bool performDealloc, bool handleUnderflow)
         if (slowpath(!newisa.nonpointer)) {
             ClearExclusive(&isa.bits);
             if (sideTableLocked) sidetable_unlock();
-            return sidetable_release(performDealloc);
+            return sidetable_release(performDealloc);//引用计数减少
         }
         // don't check newisa.fast_rr; we already called any RR overrides
         uintptr_t carry;
@@ -679,6 +679,7 @@ objc_object::rootRelease(bool performDealloc, bool handleUnderflow)
 
     __sync_synchronize();
     if (performDealloc) {
+        // 发送 SEL_dealloc 释放对象
         ((void(*)(objc_object *, SEL))objc_msgSend)(this, SEL_dealloc);
     }
     return true;
@@ -690,6 +691,7 @@ inline id
 objc_object::autorelease()
 {
     if (isTaggedPointer()) return (id)this;
+    // 调用rootAutorelease
     if (fastpath(!ISA()->hasCustomRR())) return rootAutorelease();
 
     return ((id(*)(objc_object *, SEL))objc_msgSend)(this, SEL_autorelease);
@@ -710,14 +712,16 @@ objc_object::rootAutorelease()
 inline uintptr_t 
 objc_object::rootRetainCount()
 {
+    //TaggedPointer不是一个普通的对象，不需要做引用计数的一些操作
     if (isTaggedPointer()) return (uintptr_t)this;
 
     sidetable_lock();
     isa_t bits = LoadExclusive(&isa.bits);
     ClearExclusive(&isa.bits);
-    if (bits.nonpointer) {
-        uintptr_t rc = 1 + bits.extra_rc;
+    if (bits.nonpointer) { //优化过的isa
+        uintptr_t rc = 1 + bits.extra_rc;//这里进行+1的操作
         if (bits.has_sidetable_rc) {
+            //能来到这里，说明引用计数不是存储在isa中，而是存储在sidetable中
             rc += sidetable_getExtraRC_nolock();
         }
         sidetable_unlock();
