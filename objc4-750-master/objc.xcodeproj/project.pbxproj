@@ -21,8 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		212DC99622FBAF7C0037FDF4 /* AppModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 212DC99522FBAF7C0037FDF4 /* AppModel.m */; };
-		212DC99922FBB1C00037FDF4 /* YZPerson.m in Sources */ = {isa = PBXBuildFile; fileRef = 212DC99822FBB1C00037FDF4 /* YZPerson.m */; };
 		2147D23922E982F600E81E2F /* Car.m in Sources */ = {isa = PBXBuildFile; fileRef = 2147D23822E982F600E81E2F /* Car.m */; };
 		2194E8A922E82F7A00CC9869 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 2194E8A822E82F7A00CC9869 /* Person.m */; };
 		393CEAC00DC69E3E000B69DE /* objc-references.mm in Sources */ = {isa = PBXBuildFile; fileRef = 393CEABF0DC69E3E000B69DE /* objc-references.mm */; };
@@ -165,10 +163,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		212DC99422FBAF7C0037FDF4 /* AppModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppModel.h; sourceTree = "<group>"; };
-		212DC99522FBAF7C0037FDF4 /* AppModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppModel.m; sourceTree = "<group>"; };
-		212DC99722FBB1C00037FDF4 /* YZPerson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YZPerson.h; sourceTree = "<group>"; };
-		212DC99822FBB1C00037FDF4 /* YZPerson.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YZPerson.m; sourceTree = "<group>"; };
 		2147D23522E97D6000E81E2F /* __forwarding__.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = __forwarding__.c; sourceTree = "<group>"; };
 		2147D23622E97D6100E81E2F /* __forwarding__clean.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = __forwarding__clean.c; sourceTree = "<group>"; };
 		2147D23722E982F600E81E2F /* Car.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Car.h; sourceTree = "<group>"; };
@@ -392,21 +386,9 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		212DC99322FBAF550037FDF4 /* test */ = {
-			isa = PBXGroup;
-			children = (
-				212DC99422FBAF7C0037FDF4 /* AppModel.h */,
-				212DC99522FBAF7C0037FDF4 /* AppModel.m */,
-				212DC99722FBB1C00037FDF4 /* YZPerson.h */,
-				212DC99822FBB1C00037FDF4 /* YZPerson.m */,
-			);
-			path = test;
-			sourceTree = "<group>";
-		};
 		5255259921C68E3C00072CE6 /* objc-test */ = {
 			isa = PBXGroup;
 			children = (
-				212DC99322FBAF550037FDF4 /* test */,
 				2147D23522E97D6000E81E2F /* __forwarding__.c */,
 				2147D23622E97D6100E81E2F /* __forwarding__clean.c */,
 				5255259A21C68E3C00072CE6 /* main.m */,
@@ -792,8 +774,6 @@
 				2147D23922E982F600E81E2F /* Car.m in Sources */,
 				2194E8A922E82F7A00CC9869 /* Person.m in Sources */,
 				5255259B21C68E3C00072CE6 /* main.m in Sources */,
-				212DC99922FBB1C00037FDF4 /* YZPerson.m in Sources */,
-				212DC99622FBAF7C0037FDF4 /* AppModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

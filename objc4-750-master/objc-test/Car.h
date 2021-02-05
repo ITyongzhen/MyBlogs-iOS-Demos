@@ -8,9 +8,6 @@
 #import <Foundation/Foundation.h>
 
 @interface Car : NSObject
-
-
-@property (nonatomic,assign) int price;
 - (void)run;
 + (void)run;
 - (int)test:(int)age;
